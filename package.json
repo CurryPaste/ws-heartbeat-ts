@@ -1,0 +1,34 @@
+{
+  "name": "ws-heartbeat-ts",
+  "version": "0.3.0",
+  "description": "简单封装WebSocket的心跳检测和自动连接",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+  },
+  "keywords": [
+    "currypaste",
+    "websocket",
+    "heartbeat",
+    "typescript"
+  ],
+  "author": "curryPaste",
+  "license": "ISC",
+  "dependencies": {
+    "worker-timers": "^7.0.25"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "eslint": "^7.25.0",
+    "eslint-plugin-import": "^2.20.2",
+    "ts-loader": "^8.2.0",
+    "typescript": "^4.2.4",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}

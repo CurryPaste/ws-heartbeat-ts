@@ -1,0 +1,13 @@
+{
+  "workbench.activityBar.visible": true,
+  "breadcrumbs.enabled": true,
+  "terminal.integrated.rendererType": "dom", //制表符符号eslint
+  // "editor.formatOnSave": false, //每次保存自动格式化
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "[shellscript]": {
+    "files.eol": "\r\n"
+  },
+  "typescript.validate.enable": true,
+}

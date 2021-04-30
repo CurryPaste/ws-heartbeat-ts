@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "target": "ES5",
+    "outDir": "./dist",
+    "sourceMap": true, 
+    "declaration": true // 生成声明文件
+  },
+  "include": [
+    "lib/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
