@@ -86,6 +86,8 @@ class WsHeartBeat {
   lockReconnect = false; // 重连-lock
   forbidReconnect = false; // 控制重连
 
+  private static instance: WsHeartBeat;
+
   private pingTimeoutId: null | number = null; // ping的定时器
   private pongTimeoutId: null | number = null; // pong的定时器
 
