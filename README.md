@@ -6,9 +6,19 @@ According to [websocket-heartbeat-js](https://www.npmjs.com/package/websocket-he
 1. Want to try, pack the TS file, and automatically generate `.d.ts` 😀
 2. Typescript can use `singleton` mode to avoid the situation that the client creates two identical WS links( version >= 0.5.x)
 
+### How to use
+1. Use the `getInstance` method to get the instance, not the `new` keyword.
+2. Because this can ensure that for the same URL address, when it is not the initial call, it will get the existing instance, instead of creating a WS connection of the same URL.
+```js
+/** ts */
+import WsHeartBeat, { FWsData } from 'ws-heartbeat-ts';
+const wsInstance: WsHeartBeat = WsHeartBeat.getInstance(opt);
+wsInstance.onmessage = (data: FWsData) => {
+   console.log(data, 'this is ws data');
+};
+```
 
 ### Option
-    
 | Attribute | required | type | default | description |
 | ------ | ------ | ------ | ------ | ------ |
 | url | true | string | none | websocket service address |
