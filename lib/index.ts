@@ -86,7 +86,7 @@ class WsHeartBeat {
   lockReconnect = false; // 重连-lock
   forbidReconnect = false; // 控制重连
 
-  private static instance: WsHeartBeat;
+  private static instance: WsHeartBeat; // class 实例
 
   private pingTimeoutId: null | number = null; // ping的定时器
   private pongTimeoutId: null | number = null; // pong的定时器
@@ -192,7 +192,15 @@ class WsHeartBeat {
     }
   }
 
-  constructor(params: WsOption){
+  /** 获得实例 */
+  public static getInstance(params: WsOption): WsHeartBeat {
+    if (!WsHeartBeat.instance) {
+      WsHeartBeat.instance = new WsHeartBeat(params)
+    }
+    return WsHeartBeat.instance;
+  }
+
+  private constructor(params: WsOption){
     this.opts = {
       url: params.url,
       pingTimeout: params.pingTimeout || 5000,

@@ -47,6 +47,7 @@ declare class WsHeartBeat {
     repeat: number;
     lockReconnect: boolean;
     forbidReconnect: boolean;
+    private static instance;
     private pingTimeoutId;
     private pongTimeoutId;
     onclose: () => void;
@@ -66,6 +67,8 @@ declare class WsHeartBeat {
     initEventHandle: () => void;
     /** create */
     createWebSocket: () => void;
-    constructor(params: WsOption);
+    /** 获得实例 */
+    static getInstance(params: WsOption): WsHeartBeat;
+    private constructor();
 }
 export default WsHeartBeat;
