@@ -112,6 +112,8 @@ class WsHeartBeat {
     this.forbidReconnect = true;
     this.heartReset();
     this.ws.close();
+    /** 手动关闭，需要在类上删除对应的key */
+    delete WsHeartBeat.instance[this.opts.url];
   };
   heartCheck = function () {
     this.heartReset();
