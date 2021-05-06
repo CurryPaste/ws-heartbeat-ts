@@ -1,5 +1,5 @@
 {
-  "name": "ws-heartbeat-ts",
+  "name": "@findsoft/ws-heartbeat-ts",
   "version": "0.5.2",
   "description": "简单封装WebSocket的心跳检测和自动连接",
   "main": "./dist/index.js",
@@ -15,10 +15,10 @@
     "url": "https://github.com/CurryPaste/ws-heartbeat-ts"
   },
   "keywords": [
-    "currypaste",
     "websocket",
     "heartbeat",
-    "typescript"
+    "typescript",
+    "findsoft"
   ],
   "author": "curryPaste",
   "license": "ISC",
