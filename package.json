@@ -1,6 +1,6 @@
 {
   "name": "ws-heartbeat-ts",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "简单封装WebSocket的心跳检测和自动连接",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,6 +9,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CurryPaste/ws-heartbeat-ts"
   },
   "keywords": [
     "currypaste",
