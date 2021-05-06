@@ -4,6 +4,7 @@
 /** byte - Coding format  */
 type byteFormat = 'utf-8' | 'iso-8859-2' | 'koi8' | 'cp1261' | 'gbk' | 'etc' ;
 
+
 /**
  * @param url WebSocket地址
  * @param pingTimeout 心跳发送间隔
@@ -86,7 +87,7 @@ class WsHeartBeat {
   lockReconnect = false; // 重连-lock
   forbidReconnect = false; // 控制重连
 
-  private static instance: WsHeartBeat; // class 实例
+  private static instance: Record<string, WsHeartBeat>; // class-s 实例
 
   private pingTimeoutId: null | number = null; // ping的定时器
   private pongTimeoutId: null | number = null; // pong的定时器
@@ -195,9 +196,13 @@ class WsHeartBeat {
   /** 获得实例 */
   public static getInstance(params: WsOption): WsHeartBeat {
     if (!WsHeartBeat.instance) {
-      WsHeartBeat.instance = new WsHeartBeat(params)
+      WsHeartBeat.instance = {...WsHeartBeat.instance, [params.url]: new WsHeartBeat(params)}
     }
-    return WsHeartBeat.instance;
+    const allUrl = Object.keys(WsHeartBeat.instance);
+    if (allUrl.indexOf(params.url) === -1) {
+      WsHeartBeat.instance = {...WsHeartBeat.instance, [params.url]: new WsHeartBeat(params)}
+    }
+    return WsHeartBeat.instance[params.url];
   }
 
   private constructor(params: WsOption){

@@ -3,7 +3,8 @@
 According to [websocket-heartbeat-js](https://www.npmjs.com/package/websocket-heartbeat-js) changed TS version.
 
 ### Why write TS version
-Want to try, pack the TS file, and automatically generate `.d.ts` 😀
+1. Want to try, pack the TS file, and automatically generate `.d.ts` 😀
+2. Typescript can use `singleton` mode to avoid the situation that the client creates two identical WS links( version >= 0.5.x)
 
 
 ### Option
@@ -36,9 +37,9 @@ Want to try, pack the TS file, and automatically generate `.d.ts` 😀
    1. `pingTimeout` : `15000` => `5000`
    <!-- 2. `pongTimeout` : `10000` => `10000` -->
    2. `pingMsg` : `heartbeat` => `{}`
-2. params
+2. params —— Not yet
    1. Add parameters `boolean`. It may be used in the future
-3. window.setTimeout
+3. window.setTimeout —— Not yet
    
    ***Considering that `window.settimeout` and `window.setinterval` will have problems when the browser is minimized, we are ready to switch to [worker-timers](https://www.npmjs.com/package/worker-timers)***
 4. `interface FWsData,class WsData` Front and back end data transfer specification - JSON type
@@ -53,4 +54,3 @@ Want to try, pack the TS file, and automatically generate `.d.ts` 😀
 Just run `npm run build` in the root of the project.
 
 After packaging, the related declaration file will be generated automatically. `.d.ts`
-# ws-heartbeat-ts

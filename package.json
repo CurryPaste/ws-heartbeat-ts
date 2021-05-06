@@ -1,6 +1,6 @@
 {
   "name": "ws-heartbeat-ts",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "简单封装WebSocket的心跳检测和自动连接",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
