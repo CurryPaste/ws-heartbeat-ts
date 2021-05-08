@@ -121,16 +121,25 @@ class WsHeartBeat {
   };
   heartStart = function () {
     if(this.forbidReconnect) return;//不再重连就不再执行心跳
-    this.pingTimeoutId = setTimeout(() => {
-      //这里发送一个心跳，后端收到后，返回一个心跳消息，
-      //onmessage拿到返回的心跳就说明连接正常
-      this.ws.send(this.opts.pingMsg);
-      //如果超过一定时间还没重置，说明后端主动断开了
-      this.pongTimeoutId = setTimeout(() => {
-          //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
-          this.ws.close();
-      }, this.opts.pongTimeout);
-    }, this.opts.pingTimeout);
+    const temp = setInterval(() => { // 当连接还未建立成功时 等待链接建立成功再开始发送消息
+      this.pingTimeoutId = setTimeout(() => {
+        //这里发送一个心跳，后端收到后，返回一个心跳消息，
+        //onmessage拿到返回的心跳就说明连接正常
+        this.ws.send(this.opts.pingMsg);
+        //如果超过一定时间还没重置，说明后端主动断开了
+        this.pongTimeoutId = setTimeout(() => {
+            //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
+            this.ws.close();
+        }, this.opts.pongTimeout);
+      }, this.opts.pingTimeout);
+      if(this.ws.readyState === 1) {
+        clearInterval(temp)
+        return
+      }
+      clearTimeout(this.pingTimeoutId)
+      clearTimeout(this.pongTimeoutId)
+
+    }, 100);
   };
   heartReset = function () {
     clearTimeout(this.pingTimeoutId);
