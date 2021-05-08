@@ -117,8 +117,14 @@ class WsHeartBeat {
   };
   heartCheck = function () {
     this.heartReset();
-    this.heartStart();
+    const t = setInterval(()=>{
+      if (this.ws.readyState === 1) {
+        clearInterval(t);
+        this.heartStart();
+      }
+    }, 100)
   };
+  
   heartStart = function () {
     if(this.forbidReconnect) return;//不再重连就不再执行心跳
     this.pingTimeoutId = setTimeout(() => {
