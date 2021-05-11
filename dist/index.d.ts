@@ -50,7 +50,7 @@ declare class WsHeartBeat {
     private static instance;
     private pingTimeoutId;
     private pongTimeoutId;
-    onclose: () => void;
+    onclose: (_err: CloseEvent) => void;
     onerror: () => void;
     onopen: () => void;
     onmessage: (data: FWsData, event: MessageEvent) => void;
