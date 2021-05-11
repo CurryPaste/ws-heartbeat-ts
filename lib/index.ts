@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
@@ -93,10 +94,9 @@ class WsHeartBeat {
   private pongTimeoutId: null | number = null; // pong的定时器
 
   //override hook function
-  onclose = () => {};
+  onclose = (_err: CloseEvent) => {};
   onerror = () => {};
   onopen = () => {};
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onmessage = (data: FWsData, event: MessageEvent) => {};
   onreconnect = () => {}; /** Methods of additional exposure */
   
@@ -157,8 +157,8 @@ class WsHeartBeat {
   /** init */
   initEventHandle = function () {
     /** ws 自己关闭，尝试重连 */
-    this.ws.onclose = () => {
-      this.onclose();
+    this.ws.onclose = (err: CloseEvent) => {
+      this.onclose(err);
       this.reconnect();
     }
     /** ws 异常，重连 */
