@@ -1,5 +1,5 @@
 {
-  "name": "ws-heartbeat-ts",
+  "name": "@findsoft/ws-heartbeat-ts",
   "version": "0.6.0",
   "description": "简单封装WebSocket的心跳检测和自动连接",
   "main": "./dist/index.js",
