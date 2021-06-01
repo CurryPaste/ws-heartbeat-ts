@@ -158,11 +158,13 @@ class WsHeartBeat {
   initEventHandle = function () {
     /** ws 自己关闭，尝试重连 */
     this.ws.onclose = (err: CloseEvent) => {
+      this.heartReset();
       this.onclose(err);
       this.reconnect();
     }
     /** ws 异常，重连 */
     this.ws.onerror = () => {
+      this.heartReset();
       this.onerror();
       this.reconnect();
     };
@@ -193,7 +195,8 @@ class WsHeartBeat {
   /** create */
   createWebSocket = function () {
     try {
-      this.ws = new WebSocket(this.opts.url);
+      console.log(this,'this is WsHeartBeat class');
+      this.ws = WsHeartBeat.getInstance(this.opts)
       this.initEventHandle();
     } catch (e) {
       this.reconnect();
