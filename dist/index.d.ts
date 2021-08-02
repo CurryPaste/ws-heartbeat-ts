@@ -1,6 +1,12 @@
 /** byte - Coding format  */
 declare type byteFormat = 'utf-8' | 'iso-8859-2' | 'koi8' | 'cp1261' | 'gbk' | 'etc';
 /**
+ * 拓展
+ */
+interface Params {
+    [index: string]: any;
+}
+/**
  * @param url WebSocket地址
  * @param pingTimeout 心跳发送间隔
  * @param pongTimeout 相应超时时间
@@ -22,23 +28,22 @@ interface WsOption {
     byteFormat?: byteFormat;
 }
 /**
+ * Ws 返回基础类型——都是非必传项
  * @param code code码-操作类型 eg: add/commit/edit.......
  * @param type 除code码后还需要额外判断的类型
  * @param message 提示信息 eg: this is a message
- * @param data 传输的数据 array | object | string
  */
-export interface FWsData {
-    code: string;
-    data: unknown;
+export interface FWsData<T> {
+    code?: string;
     type?: string;
     message?: string;
 }
-export declare class WsData implements FWsData {
-    code: FWsData["code"];
-    type: FWsData["type"];
-    message: FWsData["message"];
-    data: FWsData["data"];
-    constructor(param: FWsData);
+export declare class WsData implements FWsData<Params> {
+    code?: string;
+    type?: string;
+    message?: string;
+    [index: string]: any;
+    constructor(param: FWsData<Params>);
 }
 /** WsHeartBeat */
 declare class WsHeartBeat {
@@ -53,11 +58,11 @@ declare class WsHeartBeat {
     onclose: (_err: CloseEvent) => void;
     onerror: () => void;
     onopen: () => void;
-    onmessage: (data: FWsData, event: MessageEvent) => void;
+    onmessage: (data: FWsData<Params>, event: MessageEvent) => void;
     onreconnect: () => void; /** Methods of additional exposure */
     /** hooks */
     send: (data: string) => void;
-    sendData: (data: FWsData) => void;
+    sendData: (data: Params) => void;
     close: () => void;
     heartCheck: () => void;
     heartStart: () => void;

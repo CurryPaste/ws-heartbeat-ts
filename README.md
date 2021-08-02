@@ -1,14 +1,10 @@
 # ws-heartbeat-ts
 
-According to [websocket-heartbeat-js](https://www.npmjs.com/package/websocket-heartbeat-js) changed TS version.
-
-### Why write TS version
-1. Want to try, pack the TS file, and automatically generate `.d.ts` 😀
-2. Typescript can use `singleton` mode to avoid the situation that the client creates two identical WS links( version >= 0.5.x)
+根据 [websocket-heartbeat-js](https://www.npmjs.com/package/websocket-heartbeat-js) 编写的ts版本
 
 ### How to use
-1. Use the `getInstance` method to get the instance, not the `new` keyword.
-2. Because this can ensure that for the same URL address, when it is not the initial call, it will get the existing instance, instead of creating a WS connection of the same URL.
+1. 使用 `getInstance` 获得ws实例, 而不是 `new` 关键字.
+2. 因为这可以确保对于相同的URL地址，当它不是初始调用时，它将获取现有实例，而不是创建相同URL的WS连接。
 ```js
 /** ts */
 import WsHeartBeat, { FWsData } from 'ws-heartbeat-ts';
@@ -19,48 +15,58 @@ wsInstance.onmessage = (data: FWsData) => {
 ```
 
 ### Option
-| Attribute | required | type | default | description |
+| 参数 | 是否必填 | 类型 | 默认 | 说明 |
 | ------ | ------ | ------ | ------ | ------ |
-| url | true | string | none | websocket service address |
-| pingTimeout | false | number | 5000 | A heartbeat is sent every 5 seconds. If any backend message is received, the timer will reset |
-| pongTimeout | false | number | 10000 | After the Ping message is sent, the connection will be disconnected without receiving the backend message within 10 seconds |
-| reconnectTimeout | false | number | 2000 | The interval of reconnection |
-| pingMsg | false | string | "{}" | Ping message value |
-| repeatLimit | false | number | 5 | The trial times of reconnection |
-| dataType | false | json/byte | 'json' | How to process the returned data |
-| byteFormat | false| utf-8/iso-8859-2/koi8/cp1261/gbk/etc | 'utf-8'| If datatype is byte, which encoding is used for parsing |
+| url | true | string | none | ws地址 |
+| pingTimeout | false | number | 5000 | 心跳包发送频率 |
+| pongTimeout | false | number | 10000 | 超时时间,超过判定为断开 |
+| reconnectTimeout | false | number | 2000 | 重连延时,每time毫秒尝试重连 |
+| pingMsg | false | string | "{}" | 心跳包内容 |
+| repeatLimit | false | number | 5 | 尝试重连的次数 |
+| dataType | false | json/byte | 'json' | ws-message返回的数据格式 |
+| byteFormat | false| utf-8/iso-8859-2/koi8/cp1261/gbk/etc | 'utf-8'| 如果为byte类型,编码方式为utf-8 |
 
-### Appointment
-1. If `repeatLimit` default is `null`, considering that the new connection will knock down the old connection, if it is not handled, there will be two clients pushing each other and infinitely reconnecting. The back end is required to send the logged in message.
-2. dataType
+### 回调函数
+```js
+const myData = {id: 1, data: 2};
+// 发送-json格式
+wsInstance.sendData( myData );
+// 发送-普通格式
+wsInstance.send( JSON.stringify(myData) );
+// 接收-json格式
+wsInstance.onmessage = (data: FWsData<T>, wsEvent: MessageEvent) => {
+ console.log(data, 'data\nwsEvent', wsEvent);
+};
+```
+
+### 约定
+1. 如果 `repeatLimit` 的值是 `null`,则表示一直尝试重连, 考虑到新连接会破坏旧连接，如果不处理，则会有两个客户端互相无限重新连接的可能(互相顶). 需要后端处理一下对应的信息.
+2. dataType - 基础类型——接收键值对的类型
    ```js
-   interface FWsData {
+   interface FWsData<T> {
       code: string; // 识别码
-      data: unknown; // 应该用泛型
       type?: string; // 在code码相同的情况下的备用选项
       message?: string; // 需要提示的其他信息
    }
    ```
 
-### Difference
-1. defaultValue
-   1. `pingTimeout` : `15000` => `5000`
-   <!-- 2. `pongTimeout` : `10000` => `10000` -->
-   2. `pingMsg` : `heartbeat` => `{}`
-2. params —— Not yet
-   1. Add parameters `boolean`. It may be used in the future
-3. window.setTimeout —— Not yet
+### 其他
+- window.setTimeout —— 暂无
    
    ***Considering that `window.settimeout` and `window.setinterval` will have problems when the browser is minimized, we are ready to switch to [worker-timers](https://www.npmjs.com/package/worker-timers)***
-4. `interface FWsData,class WsData` Front and back end data transfer specification - JSON type
-5. `sendData()` Add a method to process `JSON`. `sendData` can instantiate objects in a fixed format and parse them in the way of `WsData`. At the same time, the original message event object is reserved as the second return value
-6. Reserved `byte` transmission mode except `JSON` format (it may be used if the back end is `golong`)
-7. others Please see the specific code
+- `interface FWsData` 前后端传输类型 - JSON 格式
+- 除`JSON`格式外的保留`byte`传输方式(传输流)
+<!-- 7. others Please see the specific code -->
 
-### Remark
-   > Please refer to [websocket-heartbeat-js](https://www.npmjs.com/package/websocket-heartbeat-js) for other detailed documents 
+### 为什么用ts
+<!-- 1. Want to try, pack the TS file, and automatically generate `.d.ts` 😀 -->
+- ts可以使用`singleton`单例模式开发,在ts项目中,可以保证同一个ws地址,只会有一个连接( version >= 0.5.x)
+- ts可以自动生成 `.d.ts` 的声明文件
 
-### Change declaration file
-Just run `npm run build` in the root of the project.
+### 备注
+   > 其他文档可以参见 [websocket-heartbeat-js](https://www.npmjs.com/package/websocket-heartbeat-js)
 
-After packaging, the related declaration file will be generated automatically. `.d.ts`
+### 更改声明文件
+根目录运行`npm run build`
+
+打包后将自动生成 `.d.ts`

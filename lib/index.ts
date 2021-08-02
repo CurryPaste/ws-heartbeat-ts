@@ -5,6 +5,13 @@
 /** byte - Coding format  */
 type byteFormat = 'utf-8' | 'iso-8859-2' | 'koi8' | 'cp1261' | 'gbk' | 'etc' ;
 
+/**
+ * 拓展
+ */
+interface Params {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [index: string]: any;
+}
 
 /**
  * @param url WebSocket地址
@@ -28,30 +35,31 @@ interface WsOption {
   byteFormat?: byteFormat; // Coding format ( if dataType is byte)
 }
 /**
+ * Ws 返回基础类型——都是非必传项
  * @param code code码-操作类型 eg: add/commit/edit.......
  * @param type 除code码后还需要额外判断的类型
  * @param message 提示信息 eg: this is a message
- * @param data 传输的数据 array | object | string
  */
-export interface FWsData {
-  code: string;     // 识别码
-  data: unknown;    // 应该用泛型 
+export interface FWsData<T> {
+  code?: string;     // 识别码
   type?: string;    // 在code码相同的情况下的备用选项 
   message?: string; // 需要提示的其他信息 
 }
-export class WsData implements FWsData {
-  code: FWsData["code"];
-  type: FWsData["type"];
-  message: FWsData["message"];
-  data: FWsData["data"];
-  constructor(param: FWsData){
-    this.code = param.code;
-    this.data = param.data;
-    this.type = param.type || null;
-    this.message = param.message || null;
+export class WsData implements FWsData<Params> {
+  code?: string;
+  type?: string;
+  message?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [index: string]: any; 
+  constructor(param: FWsData<Params>){
+    Object.keys(param).forEach((key: string) => {
+      this[key] = param[key]
+    })
+    this.code = param.code || undefined;
+    this.type = param.type || undefined;
+    this.message = param.message || undefined;
   }
 }
-// export const sendWsData = (data: FWsData) => JSON.stringify(new WsData(data));
 
 /**
  * 根据 类型 转换
@@ -97,15 +105,15 @@ class WsHeartBeat {
   onclose = (_err: CloseEvent) => {};
   onerror = () => {};
   onopen = () => {};
-  onmessage = (data: FWsData, event: MessageEvent) => {};
+  onmessage = (data: FWsData<Params>, event: MessageEvent) => {};
   onreconnect = () => {}; /** Methods of additional exposure */
   
   /** hooks */
   send = function (data: string) {
     this.ws.send(data);
   };
-  sendData = function (data: FWsData) {
-    this.ws.send(JSON.stringify(new WsData(data)));
+  sendData = function (data: Params) {
+    this.ws.send(JSON.stringify(data));
   }
   close = function () {
     //如果手动关闭连接，不再重连
@@ -117,12 +125,7 @@ class WsHeartBeat {
   };
   heartCheck = function () {
     this.heartReset();
-    const t = setInterval(()=>{
-      if (this.ws.readyState === 1) {
-        clearInterval(t);
-        this.heartStart();
-      }
-    }, 100)
+    this.heartStart();
   };
   
   heartStart = function () {
@@ -195,9 +198,15 @@ class WsHeartBeat {
   /** create */
   createWebSocket = function () {
     try {
-      console.log(this,'this is WsHeartBeat class');
-      this.ws = WsHeartBeat.getInstance(this.opts)
-      this.initEventHandle();
+      // console.log(this,'this is WsHeartBeat class');
+      this.ws = new WebSocket(this.opts.url);
+      // 创建ws实例，先等待连接后，再去initWs事件
+      const t = setInterval(()=>{
+        if (this.ws.readyState === 1) {
+          clearInterval(t);
+          this.initEventHandle();
+        }
+      }, 100)
     } catch (e) {
       this.reconnect();
       throw e;
