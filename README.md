@@ -7,10 +7,21 @@
 2. 因为这可以确保对于相同的URL地址，当它不是初始调用时，它将获取现有实例，而不是创建相同URL的WS连接。
 ```js
 /** ts */
-import WsHeartBeat, { FWsData } from 'ws-heartbeat-ts';
-const wsInstance: WsHeartBeat = WsHeartBeat.getInstance(opt);
-wsInstance.onmessage = (data: FWsData) => {
-   console.log(data, 'this is ws data');
+import WsHeartBeat, { FWsData } from '@findsoft/ws-heartbeat-ts';
+// your interface
+interface IObj extends FWsData {
+  id: string,
+  typess: string
+}
+const wsInstance: WsHeartBeat<IObj> = WsHeartBeat.getInstance(opt);
+const myData = {id: 1, data: 2};
+// 发送-json格式
+wsInstance.sendData( myData );
+// 发送-普通格式
+wsInstance.send( JSON.stringify(myData) );
+// 接收-json格式(如果 JSON.parse 抛错，则会返回ws原始数据)
+wsInstance.onmessage = (data: FWsData<T>, wsEvent: MessageEvent) => {
+ console.log(data, 'data\nwsEvent', wsEvent);
 };
 ```
 
@@ -25,19 +36,6 @@ wsInstance.onmessage = (data: FWsData) => {
 | repeatLimit | false | number | 5 | 尝试重连的次数 |
 | dataType | false | json/byte | 'json' | ws-message返回的数据格式 |
 | byteFormat | false| utf-8/iso-8859-2/koi8/cp1261/gbk/etc | 'utf-8'| 如果为byte类型,编码方式为utf-8 |
-
-### 回调函数
-```js
-const myData = {id: 1, data: 2};
-// 发送-json格式
-wsInstance.sendData( myData );
-// 发送-普通格式
-wsInstance.send( JSON.stringify(myData) );
-// 接收-json格式
-wsInstance.onmessage = (data: FWsData<T>, wsEvent: MessageEvent) => {
- console.log(data, 'data\nwsEvent', wsEvent);
-};
-```
 
 ### 约定
 1. 如果 `repeatLimit` 的值是 `null`,则表示一直尝试重连, 考虑到新连接会破坏旧连接，如果不处理，则会有两个客户端互相无限重新连接的可能(互相顶). 需要后端处理一下对应的信息.

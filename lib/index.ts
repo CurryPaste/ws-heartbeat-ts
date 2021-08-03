@@ -40,26 +40,26 @@ interface WsOption {
  * @param type 除code码后还需要额外判断的类型
  * @param message 提示信息 eg: this is a message
  */
-export interface FWsData<T> {
+export interface FWsData {
   code?: string;     // 识别码
   type?: string;    // 在code码相同的情况下的备用选项 
   message?: string; // 需要提示的其他信息 
 }
-export class WsData implements FWsData<Params> {
-  code?: string;
-  type?: string;
-  message?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [index: string]: any; 
-  constructor(param: FWsData<Params>){
-    Object.keys(param).forEach((key: string) => {
-      this[key] = param[key]
-    })
-    this.code = param.code || undefined;
-    this.type = param.type || undefined;
-    this.message = param.message || undefined;
-  }
-}
+// export class WsData implements FWsData<Params> {
+//   code?: string;
+//   type?: string;
+//   message?: string;
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   [index: string]: any; 
+//   constructor(param: FWsData<Params>){
+//     Object.keys(param).forEach((key: string) => {
+//       this[key] = param[key]
+//     })
+//     this.code = param.code || undefined;
+//     this.type = param.type || undefined;
+//     this.message = param.message || undefined;
+//   }
+// }
 
 /**
  * 根据 类型 转换
@@ -89,14 +89,14 @@ const decodeData = (opts: {
 }
 
 /** WsHeartBeat */
-class WsHeartBeat {
+class WsHeartBeat<T> {
   opts: WsOption = null;
   ws: null | WebSocket = null; //websocket实例
   repeat = 0; // 重连次数
   lockReconnect = false; // 重连-lock
   forbidReconnect = false; // 控制重连
 
-  private static instance: Record<string, WsHeartBeat>; // class-s 实例
+  private static instance: Record<string, WsHeartBeat<Params>>; // class-s 实例
 
   private pingTimeoutId: null | number = null; // ping的定时器
   private pongTimeoutId: null | number = null; // pong的定时器
@@ -105,7 +105,7 @@ class WsHeartBeat {
   onclose = (_err: CloseEvent) => {};
   onerror = () => {};
   onopen = () => {};
-  onmessage = (data: FWsData<Params>, event: MessageEvent) => {};
+  onmessage = (data: T, event: MessageEvent) => {};
   onreconnect = () => {}; /** Methods of additional exposure */
   
   /** hooks */
@@ -214,7 +214,7 @@ class WsHeartBeat {
   }
 
   /** 获得实例 */
-  public static getInstance(params: WsOption): WsHeartBeat {
+  public static getInstance(params: WsOption): WsHeartBeat<Params> {
     if (!WsHeartBeat.instance) {
       WsHeartBeat.instance = {...WsHeartBeat.instance, [params.url]: new WsHeartBeat(params)}
     }

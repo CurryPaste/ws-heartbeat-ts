@@ -33,20 +33,13 @@ interface WsOption {
  * @param type 除code码后还需要额外判断的类型
  * @param message 提示信息 eg: this is a message
  */
-export interface FWsData<T> {
+export interface FWsData {
     code?: string;
     type?: string;
     message?: string;
-}
-export declare class WsData implements FWsData<Params> {
-    code?: string;
-    type?: string;
-    message?: string;
-    [index: string]: any;
-    constructor(param: FWsData<Params>);
 }
 /** WsHeartBeat */
-declare class WsHeartBeat {
+declare class WsHeartBeat<T> {
     opts: WsOption;
     ws: null | WebSocket;
     repeat: number;
@@ -58,7 +51,7 @@ declare class WsHeartBeat {
     onclose: (_err: CloseEvent) => void;
     onerror: () => void;
     onopen: () => void;
-    onmessage: (data: FWsData<Params>, event: MessageEvent) => void;
+    onmessage: (data: T, event: MessageEvent) => void;
     onreconnect: () => void; /** Methods of additional exposure */
     /** hooks */
     send: (data: string) => void;
@@ -73,7 +66,7 @@ declare class WsHeartBeat {
     /** create */
     createWebSocket: () => void;
     /** 获得实例 */
-    static getInstance(params: WsOption): WsHeartBeat;
+    static getInstance(params: WsOption): WsHeartBeat<Params>;
     private constructor();
 }
 export default WsHeartBeat;
