@@ -21,11 +21,10 @@ body:
   - type: dropdown
     id: version
     attributes:
-      label: Version
+      label: 版本号
       description: 选择运行的版本号
       options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+        - 0.0.1 (Default)
     validations:
       required: true
   - type: dropdown
