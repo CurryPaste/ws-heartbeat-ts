@@ -15,7 +15,7 @@ body:
       label: bug描述
       description: bug的重现方式和其他与bug相关的内容
       placeholder: Tell us what you see!
-      value: ""
+      value: "bug描述"
     validations:
       required: true
   - type: dropdown
