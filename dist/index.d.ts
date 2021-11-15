@@ -1,11 +1,5 @@
 /** byte - Coding format  */
-declare type byteFormat = 'utf-8' | 'iso-8859-2' | 'koi8' | 'cp1261' | 'gbk' | 'etc';
-/**
- * 拓展
- */
-interface Params {
-    [index: string]: any;
-}
+declare type byteFormat = 'utf-8';
 /**
  * @param url WebSocket地址
  * @param pingTimeout 心跳发送间隔
@@ -27,19 +21,8 @@ interface WsOption {
     dataType?: 'json' | 'byte';
     byteFormat?: byteFormat;
 }
-/**
- * Ws 返回基础类型——都是非必传项
- * @param code code码-操作类型 eg: add/commit/edit.......
- * @param type 除code码后还需要额外判断的类型
- * @param message 提示信息 eg: this is a message
- */
-export interface FWsData {
-    code?: string;
-    type?: string;
-    message?: string;
-}
 /** WsHeartBeat */
-declare class WsHeartBeat<T> {
+declare class WsHeartBeat {
     opts: WsOption;
     ws: null | WebSocket;
     repeat: number;
@@ -51,11 +34,11 @@ declare class WsHeartBeat<T> {
     onclose: (_err: CloseEvent) => void;
     onerror: () => void;
     onopen: () => void;
-    onmessage: (data: T, event: MessageEvent) => void;
+    onmessage: <T>(data: T, event: MessageEvent) => void;
     onreconnect: () => void; /** Methods of additional exposure */
     /** hooks */
     send: (data: string) => void;
-    sendData: (data: Params) => void;
+    sendData: <T>(data: T) => void;
     close: () => void;
     heartCheck: () => void;
     heartStart: () => void;
@@ -66,7 +49,7 @@ declare class WsHeartBeat<T> {
     /** create */
     createWebSocket: () => void;
     /** 获得实例 */
-    static getInstance(params: WsOption): WsHeartBeat<Params>;
+    static getInstance(params: WsOption): WsHeartBeat;
     private constructor();
 }
 export default WsHeartBeat;
