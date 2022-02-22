@@ -31,7 +31,7 @@ wsInstance.onmessage = (data: FWsData) => {
 | byteFormat | false| utf-8/iso-8859-2/koi8/cp1261/gbk/etc | 'utf-8'| If datatype is byte, which encoding is used for parsing |
 
 ### Appointment
-1. If `repeatLimit` default is `null`, considering that the new connection will knock down the old connection, if it is not handled, there will be two clients pushing each other and infinitely reconnecting. The back end is required to send the logged in message.
+1. You need to discuss the data format of sending and receiving messages with the backend
 2. dataType
    ```js
    interface FWsData {

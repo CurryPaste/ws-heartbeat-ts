@@ -38,7 +38,7 @@ wsInstance.onmessage = (data: IObj, wsEvent: MessageEvent) => {
 | byteFormat | false| utf-8 | 'utf-8'| 如果为byte类型,编码方式为utf-8 |
 
 ### 约定
-1. 如果 `repeatLimit` 的值是 `null`,则表示一直尝试重连, 考虑到新连接会破坏旧连接，如果不处理，则会有两个客户端互相无限重新连接的可能(互相顶). 需要后端处理一下对应的信息.
+1. 需要和后端讨论 收发消息 的数据格式
 
 <!-- ### 其他
 - window.setTimeout —— 暂无
