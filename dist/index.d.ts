@@ -11,7 +11,7 @@ declare type byteFormat = 'utf-8';
  * @param byteFormat 需要单独转换的格式
  * @remark
  */
-interface WsOption {
+export interface WsOption {
     url: string;
     pingTimeout?: number | null;
     pongTimeout?: number | null;
@@ -34,7 +34,7 @@ declare class WsHeartBeat {
     onclose: (_err: CloseEvent) => void;
     onerror: () => void;
     onopen: () => void;
-    onmessage: <T>(data: T, event: MessageEvent) => void;
+    onmessage: (data: any, event: MessageEvent) => void;
     onreconnect: () => void; /** Methods of additional exposure */
     /** hooks */
     send: (data: string) => void;
