@@ -16,7 +16,7 @@ type byteFormat = 'utf-8';
  * @param byteFormat 需要单独转换的格式
  * @remark 
  */
-interface WsOption {
+export interface WsOption {
   url: string; // ws url
   pingTimeout?: number | null; // send frequency
   pongTimeout?: number | null; // time out
@@ -71,17 +71,18 @@ class WsHeartBeat {
   onclose = (_err: CloseEvent) => {};
   onerror = () => {};
   onopen = () => {};
-  onmessage = <T>(data: T, event: MessageEvent) => {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onmessage = (data: any, event: MessageEvent) => {};
   onreconnect = () => {}; /** Methods of additional exposure */
   
   /** hooks */
-  send = function (data: string) {
+  send = (data: string) => {
     this.ws.send(data);
   };
-  sendData = function <T>(data: T) {
+  sendData = <T>(data: T) => {
     this.ws.send(JSON.stringify(data));
   }
-  close = function () {
+  close = () => {
     //如果手动关闭连接，不再重连
     this.forbidReconnect = true;
     this.heartReset();
@@ -89,12 +90,12 @@ class WsHeartBeat {
     /** 手动关闭，需要在类上删除对应的key */
     delete WsHeartBeat.instance[this.opts.url];
   };
-  heartCheck = function () {
+  heartCheck = () => {
     this.heartReset();
     this.heartStart();
   };
   
-  heartStart = function () {
+  heartStart = () => {
     if(this.forbidReconnect) return;//不再重连就不再执行心跳
     this.pingTimeoutId = setTimeout(() => {
       //这里发送一个心跳，后端收到后，返回一个心跳消息，
@@ -107,11 +108,11 @@ class WsHeartBeat {
       }, this.opts.pongTimeout);
     }, this.opts.pingTimeout);
   };
-  heartReset = function () {
+  heartReset = () => {
     clearTimeout(this.pingTimeoutId);
     clearTimeout(this.pongTimeoutId);
   };
-  reconnect = function () {
+  reconnect = () => {
     if(this.opts.repeatLimit > 0 && this.opts.repeatLimit <= this.repeat) return;//limit repeat the number
     if(this.lockReconnect || this.forbidReconnect) return;
     this.lockReconnect = true;
@@ -124,7 +125,7 @@ class WsHeartBeat {
     }, this.opts.reconnectTimeout);
   };
   /** init */
-  initEventHandle = function () {
+  initEventHandle = () => {
     /** ws 自己关闭，尝试重连 */
     this.ws.onclose = (err: CloseEvent) => {
       this.heartReset();
@@ -162,7 +163,7 @@ class WsHeartBeat {
     this.heartCheck();
   };
   /** create */
-  createWebSocket = function () {
+  createWebSocket = () => {
     try {
       // console.log(this,'this is WsHeartBeat class');
       this.ws = new WebSocket(this.opts.url);
@@ -182,7 +183,7 @@ class WsHeartBeat {
   /** 获得实例 */
   public static getInstance(params: WsOption): WsHeartBeat {
     if (!WsHeartBeat.instance) {
-      WsHeartBeat.instance = {...WsHeartBeat.instance, [params.url]: new WsHeartBeat(params)}
+      WsHeartBeat.instance = {...(WsHeartBeat.instance as {}), [params.url]: new WsHeartBeat(params)}
     }
     const allUrl = Object.keys(WsHeartBeat.instance);
     if (allUrl.indexOf(params.url) === -1) {
