@@ -76,11 +76,9 @@ class WsHeartBeat {
   onreconnect = () => {}; /** Methods of additional exposure */
   
   /** hooks */
-  send = (data: string) => {
-    this.ws.send(data);
-  };
-  sendData = <T>(data: T) => {
-    this.ws.send(JSON.stringify(data));
+  send = <T = string>(data: T) => {
+    const str = typeof data === 'string' ? data : JSON.stringify(data);
+    this.ws.send(str);
   }
   close = () => {
     //如果手动关闭连接，不再重连
@@ -209,5 +207,8 @@ class WsHeartBeat {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if(typeof window != 'undefined') (window as any).WsHeartBeat = WsHeartBeat;
+
+const a = WsHeartBeat.getInstance({url: ''})
+a.send<{a: number}>({a:11})
 
 export default WsHeartBeat
